@@ -1,0 +1,68 @@
+==========Amazon Fine Foods Reviews - Task Solution==========
+First we need to identify what kind of problem we are dealing with.
+Since its expected to predict a pre-defined category value (label) we are looking into a typical 
+supervised learning task, classification.
+
+----------Used Stack----------
+All transformation scripts are written in Python and the main output is placed into a Jupyter notebook.
+Scikit-lean library classes and functions were used for main data modeling.
+Overall all Ffunctions/classes/modules used in project should be well commented, so no need to specify further.
+
+----------Input Data Transformation/Analysis----------
+Fetch Data:
+There is a small function fetch_finefoods_data in get_data.py module created for downloading and unzipping
+our dataset and placing it in relevant folder.
+
+Load Data:
+Function convert_to_dataframe in get_data.py module is transforming key-value pair text data
+into a Pandas dataframe object.
+There is implemented a key-value text analysis using a regex, storing data (value) for each column (key)
+into a separate list then used for dataframe object creation.
+
+Explore Data:
+To identify what kind of words and how frequently they appear in reviews I have prepared another small function
+count_unique_words placed in utilities.py module.
+
+----------Model/Classifier Selection----------
+Problem is simplified to distinguish whether a review will have a good or bad rating.
+Therefore we are looking for a binary classifier to detect, whether rating would be good or not-good (bad).
+I have selected a Stochastic Gradient Descent (SGD) classifier, which suits the binary problem and also
+should be able to handle large datasets efficiently.
+
+----------Feature/Label Transformations----------
+Features:
+There two text fields 'Text' and 'Summary', which can be used as features for our model.
+These field values are concatenated for each review as the pre-defined words can appear in one of the fields
+or in both of them.
+In order to feed the model with with these input features we need to convert them into some kind of a
+numerical representation.
+For purpose of that I am converting the concatenated text into a vector, represented by list of integer values:
+    -1: Text word is available in 'bad rating' word list.
+    0: Text word is not available in any of pre-defined word list.
+    1: Text word is available in 'good rating' word list.
+There is a VectorizeTransformer transformer class in transformers.py module which is doing the job.
+
+Labels:
+As mentioned in the begginning the problem is simplified to a binary problem.
+Therefore we need to re-categorize the ratings distinguishing only good or bad rating.
+I have decided to include 5.0, 4.0, 3.0 into good ratings and 2.0, 1.0 ratings into a bad rating final catagory.
+There is a CategorizeTransformer transformer class in transformers.py module which is doing the job.
+
+----------Model Performance Measures/Results----------
+Performance Measures:
+In output I have provided performance results using cross-validation and confusion matrix methods.
+However we should probably prefer the confusion matrix approach as our dataset is pretty skewed (more then 80% are 5-3 ratings).
+
+Results:
+Considering the confusion matrix we can look further into precision and recall score results.
+Recall score is telling us, that we are identifying correctly around 99% of good ratings.
+On the other hand precision score is only around 87% meaning, that from all the reviews predicted with good rating
+only 87% of them are trully good rating reviews.
+
+I suppose, that the problem is here, that a lot of bad ratings can still include some of the good rating words,
+while this is not the case for good rating reviews. Therefore, there is a place for improvement when it comes to
+model prediction presion.
+
+
+
+
